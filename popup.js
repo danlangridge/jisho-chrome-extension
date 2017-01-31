@@ -8,7 +8,7 @@
  * @param {function(string)} callback - called when the URL of the current tab
  *   is found.
  */
-function getCurrentTabUrl(callback) {
+ function getCurrentTabUrl(callback) {
   // Query filter to be passed to chrome.tabs.query - see
   // https://developer.chrome.com/extensions/tabs#method-query
   var queryInfo = {
@@ -54,7 +54,7 @@ function getCurrentTabUrl(callback) {
  * @param {function(string)} errorCallback - Called when the image is not found.
  *   The callback gets a string that describes the failure reason.
  */
-function getDefinition(searchTerm, callback, errorCallback) {
+ function getDefinition(searchTerm, callback, errorCallback) {
 
   var searchUrl = 'http://jisho.org/api/v1/search/words?keyword=' + encodeURI(searchTerm);
   var x = new XMLHttpRequest();
@@ -85,48 +85,81 @@ function renderStatus(statusText) {
 document.addEventListener('DOMContentLoaded', function() {
   getCurrentTabUrl(function(url) {
 
-var jishoSearchBox = document.getElementById("jisho-search-box");
+    var jishoSearchBox = document.getElementById("jisho-search-box");
 
-jishoSearchBox.addEventListener('change', function() {
+    jishoSearchBox.addEventListener('change', function() {
 
-  var searchTerm = jishoSearchBox.value; 
+      var searchTerm = jishoSearchBox.value; 
 
-  renderStatus('searching Jisho for ' + searchTerm);
+      renderStatus('searching Jisho for: ' + searchTerm + '...');
 
-    getDefinition( searchTerm, function(results) {
-      if (results.length == 0) {
-              document.getElementById('jisho-json').innerHTML = "no definitions found for: " + searchTerm;
-      } 
-      var firstResult = results[0];
-      var japaneseResult = firstResult.japanese;
+      getDefinition( searchTerm, function(results) {
 
-      var englishResult = firstResult.senses;
+        document.getElementById("status").innerHTML = "";
 
-      document.getElementById('jisho-json').innerHTML = JSON.stringify(japaneseResult);
-      /*
-      renderStatus('Search term: ' + url + '\n' +
-          'Google image search result: ' + imageUrl);
-      var imageResult = document.getElementById('image-result');
-      // Explicitly set the width/height to minimize the number of reflows. For
-      // a single image, this does not matter, but if you're going to embed
-      // multiple external images in your page, then the absence of width/height
-      // attributes causes the popup to resize multiple times.
-      imageResult.width = width;
-      imageResult.height = height;
-      imageResult.src = imageUrl;
-      imageResult.hidden = false;
-      */
-    }, function(errorMessage) {
-      renderStatus('Cannot display image. ' + errorMessage);
+        if (results.length == 0) {
+          document.getElementById('jisho-json').innerHTML = "no definitions found for: " + searchTerm;
+        } 
+        var firstResult = results[0];
+
+        var definitionHTML = "";
+
+        for (var j = 0; j < results.length; j++) {
+          definitionHTML += "<div class=\"reading\">" ;
+
+          var japaneseResult = results[j].japanese;
+
+
+          definitionHTML += "<br>";
+          
+          definitionHTML += "<div class=\"japaneseReading\">" ;
+
+          if (japaneseResult[0].word != undefined) {
+
+            definitionHTML += "<div class=\"kanji\"><b>" +
+            japaneseResult[0].word + 
+            "</b></div>" + "<br>";
+          }
+          definitionHTML += japaneseResult[0].reading + "<br>";
+          definitionHTML += "</div>";
+
+          var englishResult = results[j].senses;
+
+          definitionHTML += "<div class=\"englishReading\">" ;
+          for (var k = 0; k < englishResult[0].english_definitions.length; k++) {
+            var definition = englishResult[0].english_definitions[k];
+
+            definitionHTML += definition + "<br>";
+          }
+          definitionHTML += "</div>"
+
+          definitionHTML += "</div>"
+        }
+
+        document.getElementById('jisho-definitions').innerHTML = definitionHTML;
+
+      }, function(errorMessage) {
+        renderStatus('failed to show results. ' + errorMessage);
+      });
     });
   });
 });
 
+function getSelectionText() {
+  var text = "";
+  if (window.getSelection) {
+    text = window.getSelection().toString();
+  } else if (document.selection && document.selection.type != "Control") {
+    text = document.selection.createRange().text;
+  }
+  return text;
+}
 
-
-
-
+document.addEventListener("selectionchange", function() {
+  console.log(getSelectionText());
 });
+
+
 /*
 
     var searchTerm = "日";

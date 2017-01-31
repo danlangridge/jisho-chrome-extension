@@ -10,14 +10,58 @@
     <style>
       body {
         font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
-        font-size: 100%;
+        font-color: #222;
+        font-size: 80%;
+        margin: 0 auto;
+        padding: 10px;
+      }
+      #jisho-search-box {
+        padding: 4px;
+        height: 20px;
       }
       #status {
         /* avoid an excessively wide status text */
         white-space: pre;
         text-overflow: ellipsis;
         overflow: hidden;
-        max-width: 400px;
+        min-width: 300px;
+        max-width: 600px;
+        max-height: 800px;
+        font-size: 60%;
+      }
+      .reading {
+        display: block;
+        min-width: 100%;
+        border-style: solid;
+        border-color: #eee;
+        border-width: 0px;
+        border-bottom-width: 1px;
+        min-height: 50px;
+        padding-bottom: 10px;
+        overflow: hidden;
+      }
+      .kanji {
+        font-size: 140%;
+        display: inline;
+
+      }
+      .japaneseReading {
+        min-width: 30%;
+        max-width: 30%;
+        margin: 0;
+        float: left;
+      }
+      .englishReading {
+        float: left;
+        min-width: 70%;
+        max-width: 70%;
+        margin: 0;
+      }
+      #jisho-logo {
+        width: auto;
+        height: auto;
+        max-height: 80px;
+        max-width: 80px;
       }
     </style>
 
@@ -30,10 +74,11 @@
     <script src="popup.js"></script>
   </head>
   <body>
-    <input id="jisho-search-box" type="text" value="day" />
+    <img id="jisho-logo" src="jisho-logo.png">
+    <input id="jisho-search-box" type="text" value="" placeholder="search term" style="width:280px" />
     <div id="status"></div>
-    <p id="jisho-json">
-    </p>
+    <div id="jisho-definitions">
+    </div>
   </body>
 </html>
 
