@@ -1,14 +1,14 @@
 {
   "manifest_version": 2,
 
-  "name": "Getting started example",
-  "description": "This extension shows a Google Image search result for the current page",
+  "name": "Unofficial Jisho Chrome Extension",
+  "description": "This provides jisho searchbar so users can lookup jisho results without visiting the website directly",
   "version": "1.0",
 
   "browser_action": {
     "default_icon": "icon.png",
     "default_popup": "popup.html",
-    "default_title": "click here!"
+    "default_title": ""
   },
   "permissions": [
     "activeTab",
